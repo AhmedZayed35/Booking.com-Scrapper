@@ -19,8 +19,8 @@ with open('rooms_data.json', 'r') as f:
     rooms_data = json.load(f)
 
 # Initialize variables
-country = 'Paris'
-city = 'France'
+country = 'Bolivia'
+city = 'La Paz'
 pages = 1
 page_num = 1
 
@@ -123,19 +123,21 @@ while pages != 0:
             },
         })
 
-        for r in range(len(rooms_images)):
-            rooms_data.append({
-                'name': rooms_name[r],
-                'price': rooms_price[r],
-                'max people': max_people[r],
-                'facilities': rooms_facilities[r],
-                'images': rooms_images[r],
-                'description': rooms_descriptions[r],
-                'size': rooms_sizes[r],
-                'beds': rooms_beds[r],
-                'hotel_name': name
-
-            })
+        try:
+            for r in range(len(rooms_images)):
+                rooms_data.append({
+                    'name': rooms_name[r],
+                    'price': rooms_price[r],
+                    'max people': max_people[r],
+                    'facilities': rooms_facilities[r],
+                    'images': rooms_images[r],
+                    'description': rooms_descriptions[r],
+                    'size': rooms_sizes[r],
+                    'beds': rooms_beds[r],
+                    'hotel_name': name
+                })
+        except Exception:
+            continue
 
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
@@ -143,8 +145,6 @@ while pages != 0:
 
     pages -= 1
     page_num += 1
-    next_button = driver.find_element(By.CSS_SELECTOR, '#search_results_table > div:nth-child(2) > div > div > div.d7a0553560 > div.a826ba81c4.fa71cba65b.fa2f36ad22.afd256fc79.d08f526e0d.ed11e24d01.ef9845d4b3.b727170def > nav > div > div.f32a99c8d1.f78c3700d2 > button')
-    next_button.click()
     break
 
 

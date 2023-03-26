@@ -161,49 +161,52 @@ def extract_rooms_data(driver, hotel_soup):
     hotel_window_handle = driver.current_window_handle
 
     for r in rooms:
-        r.click()
-        time.sleep(4)
-
-        # Manage window change handel
-        driver.switch_to.window(driver.window_handles[-1])
-
-        # get info container
-        room_soup = BeautifulSoup(driver.page_source, "html.parser")
-
-        # get rooms size
         try:
-            size = room_soup.find('div', class_='hprt-lightbox-right-container').text.strip()
-            room_size_regex = r"Size\s+([\d\.]+)\s*m²"
-            room_size_matches = re.findall(room_size_regex, size)
-            room_size = room_size_matches[0] if room_size_matches else '55'
-            rooms_sizes.append(room_size)
+            r.click()
+            time.sleep(4)
 
+            # Manage window change handel
+            driver.switch_to.window(driver.window_handles[-1])
+
+            # Extract info container
+            room_soup = BeautifulSoup(driver.page_source, "html.parser")
+
+            # Extract rooms size
+            try:
+                size = room_soup.find('div', class_='hprt-lightbox-right-container').text.strip()
+                room_size_regex = r"Size\s+([\d\.]+)\s*m²"
+                room_size_matches = re.findall(room_size_regex, size)
+                room_size = room_size_matches[0] if room_size_matches else '55'
+                rooms_sizes.append(room_size)
+
+            except Exception:
+                rooms_sizes.append('55')
+
+            # Extract room description
+            try:
+                room_info_soup = room_soup.find('div', class_='hprt-lightbox-right-container')
+                rooms_descriptions.append(room_info_soup.find_all('p')[0].text.strip())
+
+            except Exception:
+                rooms_descriptions.append('Featuring city, park and Empire State Building views, this room offers a 48” flat-screen TV. The private bathroom features an enclosed rainforest shower and custom Le Labo bath amenities.')
+
+            # Extract room images
+            try:
+                images_container = room_soup.find('div', class_='hprt-lightbox-gallery-thumbs hprt-lightbox-gallery-thumbs_border')
+                images = [image['src'] for image in images_container.find_all('img')]
+                rooms_images.append([i.replace("square60", "square600") for i in images])
+            except Exception:
+                rooms_images.append(["https://cf.bstatic.com/xdata/images/hotel/square600/409024061.jpg?k=06f54741f490f91ebf86ccba1cc647813e6e1436bf0563eec1bdec0ecf497bd3&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/367208323.jpg?k=ed74de6d07ca853f7d45cab4c08c153e2cd9c82a348e4df779bb6e20e8d81c3a&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090486.jpg?k=7410605080a339c3cd406a8d827b12e9a1fdbe5e5eab3abd6e364dd344cbbdda&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090489.jpg?k=9acd33406b4a99c845521beccf7e2a4bf2f0aa8e48037aaf76c6b843e5461df4&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090490.jpg?k=c5e83658c6cdd96c2e651b22f5601ef914be624ab7f57427a630fe7678003377&o="])
+
+            # Close window and switch back
+            driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
+            driver.switch_to.window(hotel_window_handle)
+
+            if len(rooms) > len(room_beds):
+                bed_types = [' queen bed', ' sofa bed', ' king bed', ' twin bed']
+                for r in range(len(rooms) - len(room_beds)):
+                    room_beds.append([str(random.randint(0, 3)) + bed_types[random.randint(0, 3)]])
         except Exception:
-            rooms_sizes.append('55')
-
-        # Extract room description
-        try:
-            room_info_soup = room_soup.find('div', class_='hprt-lightbox-right-container')
-            rooms_descriptions.append(room_info_soup.find_all('p')[0].text.strip())
-
-        except Exception:
-            rooms_descriptions.append('Featuring city, park and Empire State Building views, this room offers a 48” flat-screen TV. The private bathroom features an enclosed rainforest shower and custom Le Labo bath amenities.')
-
-        # Extract room images
-        try:
-            images_container = room_soup.find('div', class_='hprt-lightbox-gallery-thumbs hprt-lightbox-gallery-thumbs_border')
-            images = [image['src'] for image in images_container.find_all('img')]
-            rooms_images.append([i.replace("square60", "square600") for i in images])
-        except Exception:
-            rooms_images.append(["https://cf.bstatic.com/xdata/images/hotel/square600/409024061.jpg?k=06f54741f490f91ebf86ccba1cc647813e6e1436bf0563eec1bdec0ecf497bd3&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/367208323.jpg?k=ed74de6d07ca853f7d45cab4c08c153e2cd9c82a348e4df779bb6e20e8d81c3a&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090486.jpg?k=7410605080a339c3cd406a8d827b12e9a1fdbe5e5eab3abd6e364dd344cbbdda&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090489.jpg?k=9acd33406b4a99c845521beccf7e2a4bf2f0aa8e48037aaf76c6b843e5461df4&o=", "https://cf.bstatic.com/xdata/images/hotel/square600/368090490.jpg?k=c5e83658c6cdd96c2e651b22f5601ef914be624ab7f57427a630fe7678003377&o="])
-
-        # Close window and switch back
-        driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
-        driver.switch_to.window(hotel_window_handle)
-
-        if len(rooms) > len(room_beds):
-            bed_types = [' queen bed', ' sofa bed', ' king bed', ' twin bed']
-            for r in range(len(rooms) - len(room_beds)):
-                room_beds.append([str(random.randint(0, 3)) + bed_types[random.randint(0, 3)]])
+            continue
 
     return rooms_name, rooms_price, rooms_facilities, rooms_images, rooms_descriptions, rooms_sizes, room_beds, max_people
