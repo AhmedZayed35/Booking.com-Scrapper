@@ -1,6 +1,6 @@
 # Booking.com-Scrapper
 Python script for scraping hotels info on booking.com
-made with selenium and beautiful soup 4
+made with selenium and beautifulsoup4
 
 - data scraped:
   - hotel: name, price, address, location, rating, description, images, distnce from city center, city, country, and aminities.
