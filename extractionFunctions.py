@@ -38,9 +38,10 @@ def filter_and_get_hotels(driver, pages_num, soup):
         hotels = driver.find_elements(By.CLASS_NAME, 'b8b0793b0e')
         cc_distance_string = [d.text.strip() for d in soup.find_all('span', {'data-testid': 'distance'})]
         cc_distance = [float(re.search(r'\d+\.?\d*', text).group()) for text in cc_distance_string if text] if len(cc_distance_string) else ['NaN']*10
+        print('Hotels Found')
         return hotels, cc_distance
     except Exception:
-        print('no hotels found')
+        print('No Hotels Found')
         driver.quit()
 
 

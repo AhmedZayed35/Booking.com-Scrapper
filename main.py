@@ -53,7 +53,6 @@ while pages != 0:
         hotels_found = 10
 
     for hotel in hotels[:hotels_found]:
-        print("hotels found")
         try:
             hotel.click()
             driver.switch_to.window(driver.window_handles[1])
