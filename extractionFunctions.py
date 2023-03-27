@@ -211,7 +211,7 @@ def extract_rooms_data(driver, hotel_soup):
             if len(rooms) > len(room_beds):
                 bed_types = [' queen bed', ' sofa bed', ' king bed', ' twin bed']
                 for r in range(len(rooms) - len(room_beds)):
-                    room_beds.append([str(random.randint(0, 3)) + bed_types[random.randint(0, 3)]])
+                    room_beds.append([str(random.randint(0, 3)) + bed_types[random.randint(1, 3)]])
         except Exception:
             continue
 
