@@ -29,15 +29,19 @@ def city_to_scrape(driver, c):
 
 
 def filter_and_get_hotels(driver, pages_num, soup):
-    if pages_num == 1:
-        driver.find_element(By.XPATH, "//div[contains(text(), 'Hotels')]").click()
-        driver.refresh()
-        time.sleep(3)
+    try:
+        if pages_num == 1:
+            driver.find_element(By.XPATH, "//div[contains(text(), 'Hotels')]").click()
+            driver.refresh()
+            time.sleep(3)
 
-    hotels = driver.find_elements(By.CLASS_NAME, 'b8b0793b0e')
-    cc_distance_string = [d.text.strip() for d in soup.find_all('span', {'data-testid': 'distance'})]
-    cc_distance = [float(re.search(r'\d+\.?\d*', text).group()) for text in cc_distance_string if text] if len(cc_distance_string) else ['NaN']*10
-    return hotels, cc_distance
+        hotels = driver.find_elements(By.CLASS_NAME, 'b8b0793b0e')
+        cc_distance_string = [d.text.strip() for d in soup.find_all('span', {'data-testid': 'distance'})]
+        cc_distance = [float(re.search(r'\d+\.?\d*', text).group()) for text in cc_distance_string if text] if len(cc_distance_string) else ['NaN']*10
+        return hotels, cc_distance
+    except Exception:
+        print('no hotels found')
+        driver.quit()
 
 
 def extract_name(hotel_soup):

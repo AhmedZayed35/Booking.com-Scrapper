@@ -19,8 +19,8 @@ with open('rooms_data.json', 'r') as f:
     rooms_data = json.load(f)
 
 # Initialize variables
-country = 'Bolivia'
-city = 'La Paz'
+country = 'Argentina'
+city = 'Buenos Aires'
 pages = 1
 page_num = 1
 
@@ -48,8 +48,12 @@ while pages != 0:
 
     # Extract the required data from each hotel
     hotel_num = 0
+    hotels_found = len(hotels)
+    if hotels_found > 10:
+        hotels_found = 10
 
-    for hotel in hotels[:10]:
+    for hotel in hotels[:hotels_found]:
+        print("hotels found")
         try:
             hotel.click()
             driver.switch_to.window(driver.window_handles[1])
