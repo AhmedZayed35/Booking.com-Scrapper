@@ -20,7 +20,7 @@ with open('rooms_data.json', 'r') as f:
 
 # Initialize variables
 country = 'Argentina'
-city = 'Buenos Aires'
+city = 'Sydney'
 pages = 1
 page_num = 1
 

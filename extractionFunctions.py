@@ -16,8 +16,6 @@ def innit_driver(driver, wait):
 
 
 def city_to_scrape(driver, c):
-    search_input = driver.find_element(By.NAME, 'ss')
-    search_input.send_keys(c)
     driver.find_element(By.XPATH, '//*[@id="indexsearch"]/div[2]/div/div/form/div[1]/div[2]/div/div[1]/button[1]').click()
     today = datetime.date.today()
     tstring = today.strftime("%Y-%m-%d")
@@ -25,6 +23,9 @@ def city_to_scrape(driver, c):
     tomstring = tomorrow.strftime("%Y-%m-%d")
     driver.find_element(By.XPATH, f"//span[@data-date='{tstring}']").click()
     driver.find_element(By.XPATH, f"//span[@data-date='{tomstring}']").click()
+    search_input = driver.find_element(By.NAME, 'ss')
+    search_input.send_keys(c)
+    time.sleep(4)
     search_input.submit()
 
 
