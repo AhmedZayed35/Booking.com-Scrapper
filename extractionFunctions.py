@@ -180,7 +180,7 @@ def extract_rooms_data(driver, hotel_soup):
                 rooms_sizes.append(room_size)
 
             except Exception:
-                rooms_sizes.append('55')
+                rooms_sizes.append('23')
 
             # Extract room description
             try:

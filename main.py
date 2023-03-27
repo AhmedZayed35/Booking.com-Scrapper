@@ -48,80 +48,85 @@ while pages != 0:
 
     # Extract the required data from each hotel
     hotel_num = 0
+
     for hotel in hotels[:10]:
-        hotel.click()
-        driver.switch_to.window(driver.window_handles[1])
+        try:
+            hotel.click()
+            driver.switch_to.window(driver.window_handles[1])
 
-        # Get the webpage content
-        hotel_html = driver.page_source
-        hotel_soup = BeautifulSoup(hotel_html, 'html.parser')
+            # Get the webpage content
+            hotel_html = driver.page_source
+            hotel_soup = BeautifulSoup(hotel_html, 'html.parser')
 
-        # Extract the hotel name
-        name = extractionFunctions.extract_name(hotel_soup)
+            # Extract the hotel name
+            name = extractionFunctions.extract_name(hotel_soup)
 
-        # Extract the hotel address
-        address = extractionFunctions.extract_address(driver)
+            # Extract the hotel address
+            address = extractionFunctions.extract_address(driver)
 
-        # Extract the hotel location coordinates
-        hotel_location = extractionFunctions.extract_coordinates(hotel_soup)
+            # Extract the hotel location coordinates
+            hotel_location = extractionFunctions.extract_coordinates(hotel_soup)
 
-        # Extract the amenities
-        amenitiesList = extractionFunctions.extract_amenities(hotel_soup)
+            # Extract the amenities
+            amenitiesList = extractionFunctions.extract_amenities(hotel_soup)
 
-        # Extract nearby places
-        placesList = extractionFunctions.extract_nearby_places(driver, wait)
+            # Extract nearby places
+            placesList = extractionFunctions.extract_nearby_places(driver, wait)
 
-        # Extract nearby restaurants
-        restaurantsList = extractionFunctions.extract_restaurants(driver)
+            # Extract nearby restaurants
+            restaurantsList = extractionFunctions.extract_restaurants(driver)
 
-        # Extract nearby attractions
-        attractionsList = extractionFunctions.extract_attractions(driver)
+            # Extract nearby attractions
+            attractionsList = extractionFunctions.extract_attractions(driver)
 
-        # Extract the hotel rating
-        rating = extractionFunctions.extract_rating(driver)
+            # Extract the hotel rating
+            rating = extractionFunctions.extract_rating(driver)
 
-        # Extract the hotel price
-        price = extractionFunctions.extract_price(hotel_soup)
+            # Extract the hotel price
+            price = extractionFunctions.extract_price(hotel_soup)
 
-        # Extract images links
-        images = extractionFunctions.extract_images(hotel_soup)
+            # Extract images links
+            images = extractionFunctions.extract_images(hotel_soup)
 
-        # Extract the description
-        description = extractionFunctions.extract_description(hotel_soup)
+            # Extract the description
+            description = extractionFunctions.extract_description(hotel_soup)
 
-        # Extract Rooms Information
-        rooms_name, rooms_price, rooms_facilities, rooms_images, rooms_descriptions, rooms_sizes, rooms_beds, max_people = extractionFunctions.extract_rooms_data(driver, hotel_soup)
+            # Extract Rooms Information
+            rooms_name, rooms_price, rooms_facilities, rooms_images, rooms_descriptions, rooms_sizes, rooms_beds, max_people = extractionFunctions.extract_rooms_data(driver, hotel_soup)
 
-        # Add the data to files
-        data.append({
-            'name': name,
-            'address': address,
-            'distance from city center': cc_distance[hotel_num],
-            'area_info': {
-                'nearby places': placesList,
-                'attractions': attractionsList,
-                'restaurants': restaurantsList
-            },
-            'amenities': amenitiesList,
-            'rating': rating,
-            'price': price,
-            'images': images,
-            'city': city,
-            'country': country,
-            'description': description.strip()
-        })
-
-        loc_data.append({
-            'type': 'Feature',
-            'geometry': {
-                'type': 'Point',
-                'coordinates': hotel_location,
-            },
-            'properties': {
+            # Add the data to files
+            data.append({
                 'name': name,
-                'description': description.split(".", 1)[0]
-            },
-        })
+                'address': address,
+                'distance from city center': cc_distance[hotel_num],
+                'area_info': {
+                    'nearby places': placesList,
+                    'attractions': attractionsList,
+                    'restaurants': restaurantsList
+                },
+                'amenities': amenitiesList,
+                'rating': rating,
+                'price': price,
+                'images': images,
+                'city': city,
+                'country': country,
+                'description': description.strip()
+            })
+
+            loc_data.append({
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': hotel_location,
+                },
+                'properties': {
+                    'name': name,
+                    'description': description.split(".", 1)[0]
+                },
+            })
+
+        except Exception:
+            continue
 
         try:
             for r in range(len(rooms_images)):
